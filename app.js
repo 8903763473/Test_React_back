@@ -28,12 +28,14 @@ const caregoryRouter = require('./src/router/categoryRouter');
 const productRouter = require('./src/router/productRouter');
 const userRouter = require('./src/router/userRouter');
 const cartRoute = require('./src/router/cartRouter');
+const checkoutRoute = require('./src/router/checkoutRouter');
 
 
 app.use('/api/category', caregoryRouter);
 app.use('/api/product', productRouter);
 app.use('/api/user', userRouter);
 app.use('/api/cart', cartRoute);
+app.use('/api/checkout', checkoutRoute);
 
 
 app.listen(PORT, () => {

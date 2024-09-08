@@ -1,0 +1,117 @@
+const Checkout = require('../model/checkoutModel');
+const nodemailer = require('nodemailer');
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
+
+
+// Create a transporter object using the default SMTP transport
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER, // Use environment variables
+        pass: process.env.EMAIL_PASS,
+    },
+    debug: true,
+    tls: {
+        rejectUnauthorized: false // Allows self-signed certificates, consider using a valid SSL certificate in production
+    },
+});
+
+// Verify connection configuration
+transporter.verify(function (error, success) {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log('Server is ready to take our messages');
+    }
+});
+
+class CheckoutService {
+
+    async createCheckout(checkoutData) {
+        try {
+            const checkout = new Checkout(checkoutData);
+            await checkout.save();
+            return checkout;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getAllCheckouts() {
+        try {
+            const checkouts = await Checkout.find().populate('products.productId');
+            return checkouts;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getCheckoutsByUserId(userId) {
+        try {
+            const checkouts = await Checkout.find({ userId }).populate('products.productId');
+            return checkouts;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getCheckoutById(checkoutId) {
+        try {
+            const checkout = await Checkout.findById(checkoutId).populate('products.productId');
+            return checkout;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async orderPlacedService(email) {
+        return new Promise(async (resolve, reject) => {
+            let mailOptions = {
+                from: 'chatwithus5581@gmail.com', // Sender address
+                to: email, // List of recipients
+                subject: 'Order Placed Successfully !', // Subject line
+                html: `
+                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <div style="text-align: center;">
+            <img src="cid:logo" alt="Logo" style="width: 120px; height: auto; margin-bottom: 20px;"/>
+        </div>
+        <h1 style="color: #333; text-align: center; margin-bottom: 20px;">Order Confirmation</h1>
+        <p style="font-size: 16px; color: #555; text-align: center; margin-bottom: 20px;">Your order has been placed successfully. Thank you for shopping with us!</p>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+        <p style="font-size: 14px; color: #777; text-align: center;">"The best way to predict the future is to create it." – Vijay</p>
+        <div style="text-align: center; margin-top: 20px;">
+            <p style="font-size: 14px; color: #333;">If you have any questions, feel free to contact us at <a href="mailto:chatwithus5581@gmail.com" style="color: #007bff;">chatwithus5581@gmail.com</a>.</p>
+        </div>
+    </div>
+            `,
+                attachments: [
+                    {
+                        filename: 'logo.png',
+                        path: path.join(__dirname, '../vr.jpg'),
+                        cid: 'logo'
+                    }
+                ]
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error occurred:', error);
+                    return reject({
+                        message: 'Email sending failed',
+                        error: error.message
+                    });
+                }
+                console.log('Email sent:', info.response);
+                resolve({
+                    message: 'Email sent successfully',
+                    info: info.response
+                });
+            });
+        });
+    };
+
+}
+
+module.exports = new CheckoutService();
