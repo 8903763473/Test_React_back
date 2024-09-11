@@ -31,11 +31,11 @@ const cartRoute = require('./src/router/cartRouter');
 const checkoutRoute = require('./src/router/checkoutRouter');
 
 
-app.use('/api/category', caregoryRouter);
-app.use('/api/product', productRouter);
-app.use('/api/user', userRouter);
-app.use('/api/cart', cartRoute);
-app.use('/api/checkout', checkoutRoute);
+app.use('/api/grocery/category', caregoryRouter);
+app.use('/api/grocery/product', productRouter);
+app.use('/api/grocery/user', userRouter);
+app.use('/api/grocery/cart', cartRoute);
+app.use('/api/grocery/checkout', checkoutRoute);
 
 
 app.listen(PORT, () => {
