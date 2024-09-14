@@ -33,6 +33,7 @@ exports.loginUser = async (userData) => {
         const UserData = userObject;
         return { user: UserData };
     } catch (error) {
+        console.log(error.message);
         throw new Error(error.message);
     }
 };

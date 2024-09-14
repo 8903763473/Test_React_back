@@ -9,18 +9,14 @@ class CartService {
 
     async addToCart(userId, productId, quantity) {
         try {
-            // Find the existing cart for the user
             let cart = await Cart.findOne({ userId }).populate('items.productId');
 
             if (cart) {
-                // Check if the product is already in the cart
                 const itemIndex = cart.items.findIndex(item => item.productId._id.toString() === productId.toString());
 
                 if (itemIndex > -1) {
-                    // Product already exists in the cart, update quantity
                     cart.items[itemIndex].quantity += quantity;
                 } else {
-                    // Product does not exist in the cart, add it
                     const product = await Product.findById(productId);
                     if (!product) {
                         throw new Error('Product not found');
@@ -41,10 +37,8 @@ class CartService {
                         productDiscount: product.productDiscount,
                     });
                 }
-                // Save the updated cart
                 return await cart.save();
             } else {
-                // Cart does not exist, create a new one
                 const product = await Product.findById(productId);
                 if (!product) {
                     throw new Error('Product not found');
@@ -70,8 +64,7 @@ class CartService {
                 return await newCart.save();
             }
         } catch (error) {
-            // Handle errors
-            throw new Error(`Failed to add to cart: ${error.message}`);
+            throw new Error(`${error.message}`);
         }
     }
 
