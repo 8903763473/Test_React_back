@@ -72,6 +72,31 @@ class ProductService {
             throw new Error(`Error fetching products by category: ${error.message}`);
         }
     }
+
+    async getHighOfferProducts() {
+        try {
+            return await Product.find({ productDiscount: { $gt: 20 } }).sort({ productDiscount: -1 }).limit(4);
+        } catch (error) {
+            throw new Error(`Error fetching high offer products: ${error.message}`);
+        }
+    }
+
+    async getTrendingProducts() {
+        try {
+            const trendingCriteria = {
+                $or: [
+                    { productRating: { $gte: 3.5 } },
+                    { productDiscount: { $gte: 10 } }
+                ]
+            };
+
+            const products = await Product.find(trendingCriteria).limit(8);;
+            return products;
+        } catch (error) {
+            throw new Error('Error fetching trending products: ' + error.message);
+        }
+    }
+
 }
 
 module.exports = new ProductService();

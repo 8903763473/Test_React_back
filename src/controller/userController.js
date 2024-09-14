@@ -14,6 +14,7 @@ exports.createUser = async (req, res) => {
 // Login a user
 exports.loginUser = async (req, res) => {
     try {
+        console.log(req.body);
         const userData = req.body; // { email, password }
         const result = await userService.loginUser(userData);
         res.status(200).json(result);
