@@ -6,6 +6,8 @@ class PaymentController {
         const { amount, currency } = req.body;
 
         try {
+            console.log(req.body);
+
             const order = await paymentService.createOrder(amount, currency);
             res.json(order);
         } catch (error) {

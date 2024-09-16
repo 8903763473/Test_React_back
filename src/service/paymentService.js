@@ -2,21 +2,22 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
 const razorpay = new Razorpay({
-    key_id: 'rzp_test_kpCe8bslVbEfVQ',
-    key_secret: 'rGy3RGtymWaeLoVi10Qem13b'
+    key_id: 'rzp_test_8Hsb2JqvzddDdG',
+    key_secret: 'tSp8P68D5pS9qDi5RVntlXos'
 });
 
 class PaymentService {
 
     async createOrder(amount, currency) {
         const options = {
-            amount: amount * 100,  
+            amount: amount * 100,
             currency,
-            receipt: 'order_rcptid_11'
+            receipt: 'order_' + new Date().getTime()
         };
 
         try {
             const order = await razorpay.orders.create(options);
+            console.log(order);
             return order;
         } catch (error) {
             throw new Error(error);
