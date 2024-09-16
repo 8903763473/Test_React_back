@@ -4,10 +4,14 @@ class CheckoutController {
     async createCheckout(req, res) {
         try {
             // Create the checkout
+            console.log(req.body);
+            
             const checkout = await checkoutService.createCheckout(req.body);
+            console.log(checkout);
 
             // Send the email
             const emailResponse = await checkoutService.orderPlacedService(req.body.email);
+            console.log(emailResponse);
 
             // Respond with the checkout data and email response
             res.status(201).json({
