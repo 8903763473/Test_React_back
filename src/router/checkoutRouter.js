@@ -7,4 +7,7 @@ router.get('/getAllCheckouts', checkoutController.getAllCheckouts);
 router.get('/getCheckoutsByUserId/:userId', checkoutController.getCheckoutsByUserId);
 router.get('/getCheckoutById/:checkoutId', checkoutController.getCheckoutById);
 
+router.get('/getOverAllOrders', checkoutController.getOverallOrders);
+router.get('/getMyOrdersById/:id', checkoutController.getOrderById);
+router.get('/getMyOrdersByuserId/:userId', checkoutController.getOrdersByUserId);
 module.exports = router;
