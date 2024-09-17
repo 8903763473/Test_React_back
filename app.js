@@ -31,12 +31,14 @@ const cartRoute = require('./src/router/cartRouter');
 const checkoutRoute = require('./src/router/checkoutRouter');
 const contactRoute = require('./src/router/contactRouter');
 const paymentRoute = require('./src/router/paymentRouter');
+const wishListRoute = require('./src/router/wishListRouter');
 
 
 app.use('/api/grocery/category', caregoryRouter);
 app.use('/api/grocery/product', productRouter);
 app.use('/api/grocery/user', userRouter);
 app.use('/api/grocery/cart', cartRoute);
+app.use('/api/grocery/wish', wishListRoute);
 app.use('/api/grocery/checkout', checkoutRoute);
 app.use('/api/grocery/contact', contactRoute);
 app.use('/api/grocery/payment', paymentRoute);
