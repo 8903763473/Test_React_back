@@ -112,6 +112,32 @@ class CheckoutService {
         });
     };
 
+    // Get all orders
+    async getOverallOrders() {
+        try {
+            return await Checkout.find().populate('userId', 'name email').populate('products.productId');
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    // Get order by ID
+    async getOrderById(orderId) {
+        try {
+            return await Checkout.findById(orderId).populate('userId', 'name email').populate('products.productId');
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getOrdersByUserId(userId) {
+        try {
+            return await Checkout.find({ userId }).populate('userId', 'name email').populate('products.productId');
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 module.exports = new CheckoutService();

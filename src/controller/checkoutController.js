@@ -3,17 +3,8 @@ const checkoutService = require('../service/checkoutService');
 class CheckoutController {
     async createCheckout(req, res) {
         try {
-            // Create the checkout
-            console.log(req.body);
-            
             const checkout = await checkoutService.createCheckout(req.body);
-            console.log(checkout);
-
-            // Send the email
             const emailResponse = await checkoutService.orderPlacedService(req.body.email);
-            console.log(emailResponse);
-
-            // Respond with the checkout data and email response
             res.status(201).json({
                 checkout,
                 emailResponse
@@ -63,7 +54,46 @@ class CheckoutController {
                 error: error.message
             });
         }
-    }
+    };
+
+    // Get all orders
+    async getOverallOrders(req, res) {
+        try {
+            const orders = await checkoutService.getOverallOrders();
+            res.status(200).json(orders);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    };
+
+    // Get order by ID
+    async getOrderById(req, res) {
+        const { id } = req.params;
+        try {
+            const order = await checkoutService.getOrderById(id);
+            if (!order) {
+                return res.status(404).json({ message: 'Order not found' });
+            }
+            res.status(200).json(order);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    };
+
+
+    async getOrdersByUserId(req, res) {
+        const { userId } = req.params;
+        try {
+            const orders = await checkoutService.getOrdersByUserId(userId);
+            if (orders.length === 0) {
+                return res.status(404).json({ message: 'No orders found for this user' });
+            }
+            res.status(200).json(orders);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    };
+
 }
 
 module.exports = new CheckoutController();
