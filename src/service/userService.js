@@ -37,3 +37,24 @@ exports.loginUser = async (userData) => {
         throw new Error(error.message);
     }
 };
+
+exports.getUserById = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+exports.getAllUsers = async () => {
+    try {
+        const users = await User.find({});
+        return users;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
