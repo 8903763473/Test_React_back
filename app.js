@@ -32,6 +32,7 @@ const checkoutRoute = require('./src/router/checkoutRouter');
 const contactRoute = require('./src/router/contactRouter');
 const paymentRoute = require('./src/router/paymentRouter');
 const wishListRoute = require('./src/router/wishListRouter');
+const feedbackRoute = require('./src/router/feedbackRouters');
 
 
 app.use('/api/grocery/category', caregoryRouter);
@@ -42,6 +43,7 @@ app.use('/api/grocery/wish', wishListRoute);
 app.use('/api/grocery/checkout', checkoutRoute);
 app.use('/api/grocery/contact', contactRoute);
 app.use('/api/grocery/payment', paymentRoute);
+app.use('/api/grocery/feedback', feedbackRoute);
 
 
 app.listen(PORT, () => {
