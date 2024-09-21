@@ -79,6 +79,55 @@ class CartService {
     async clearCart(userId) {
         return Cart.findOneAndDelete({ userId });
     }
+
+    async updateCart(userId, items) {
+        let cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            return null;
+        }
+
+        for (const item of items) {
+            const { productId, quantity } = item;
+
+            // Validate required fields for each item
+            if (!productId || !quantity) {
+                throw new Error('Product ID and quantity are required for each item');
+            }
+
+            const itemIndex = cart.items.findIndex(cartItem => cartItem.productId.toString() === productId);
+
+            if (itemIndex === -1) {
+                // If the item doesn't exist, add it to the cart
+                const product = await Product.findById(productId);
+                if (!product) {
+                    throw new Error(`Product with ID ${productId} not found`);
+                }
+                cart.items.push({
+                    productId: product._id,
+                    quantity: quantity,
+                    productName: product.productName,
+                    productCategory: product.productCategory,
+                    productImage: product.productImage,
+                    productOriginalRate: product.productOriginalRate,
+                    productCurrentRate: product.productCurrentRate,
+                    productDescription: product.productDescription,
+                    productRating: product.productRating,
+                    productStatus: product.productStatus,
+                    productQuantity: product.productQuantity,
+                    productUnit: product.productUnit,
+                    productDiscount: product.productDiscount,
+                });
+            } else {
+                // If the item exists, update the quantity
+                cart.items[itemIndex].quantity = quantity;
+            }
+        }
+
+        // Save the updated cart
+        await cart.save();
+        return cart;
+    }
 }
 
 module.exports = new CartService();

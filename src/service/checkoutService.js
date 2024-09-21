@@ -1,4 +1,5 @@
 const Checkout = require('../model/checkoutModel');
+const Cart = require('../model/cartModel');
 const nodemailer = require('nodemailer');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -33,6 +34,9 @@ class CheckoutService {
         try {
             const checkout = new Checkout(checkoutData);
             await checkout.save();
+
+            const userId = checkoutData.userId;
+            await Cart.deleteMany({ userId: userId });
             return checkout;
         } catch (error) {
             throw new Error(error.message);
