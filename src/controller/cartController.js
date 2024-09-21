@@ -58,3 +58,26 @@ exports.clearCart = async (req, res) => {
 };
 
 
+exports.updateCart = async (req, res) => {
+    try {
+        const { userId, items } = req.body;
+
+        // Validate inputs
+        if (!userId || !Array.isArray(items)) {
+            return res.status(400).json({ message: 'User ID and items array are required' });
+        }
+
+        // Call CartService to perform bulk update
+        const updatedCart = await CartService.updateCart(userId, items);
+
+        if (!updatedCart) {
+            return res.status(404).json({ message: 'Cart not found or failed to update' });
+        }
+
+        res.json({ message: 'Cart updated successfully', updatedCart });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+

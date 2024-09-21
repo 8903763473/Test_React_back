@@ -10,7 +10,7 @@ class PaymentService {
 
     async createOrder(amount, currency) {
         const options = {
-            amount: amount * 100,
+            amount: amount,
             currency,
             receipt: 'order_' + new Date().getTime()
         };
