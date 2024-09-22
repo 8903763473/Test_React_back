@@ -57,6 +57,7 @@ class ProductController {
 
     async getProductsByCategory(req, res) {
         try {
+            console.log(req.params.category);
             const products = await productService.getProductsByCategory(req.params.category);
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products found for this category' });
