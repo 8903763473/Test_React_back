@@ -1,10 +1,12 @@
 // services/cartService.js
 const Cart = require('../model/cartModel');
 const Product = require('../model/productModel');
+const mongoose = require('mongoose');
 
 class CartService {
     async getCart(userId) {
-        return Cart.findOne({ userId }).populate('items.productId');
+        const cart = await Cart.findOne({ userId }).populate('items.productId');
+        return cart;
     }
 
     async addToCart(userId, productId, quantity) {
@@ -128,6 +130,15 @@ class CartService {
         await cart.save();
         return cart;
     }
+
+    async watchCartChanges(userId) {
+        const pipeline = [
+            { $match: { 'fullDocument.userId': mongoose.Types.ObjectId(userId) } }
+        ];
+        const changeStream = Cart.watch(pipeline);
+        return changeStream;
+    }
 }
+
 
 module.exports = new CartService();
