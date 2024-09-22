@@ -126,13 +126,18 @@ class CheckoutService {
     }
 
     // Get order by ID
-    async getOrderById(orderId) {
+    async getOrderById(orderId, userId) {
+        console.log(orderId, userId);
+
         try {
-            return await Checkout.findById(orderId).populate('userId', 'name email').populate('products.productId');
+            return await Checkout.findOne({ _id: orderId, userId: userId })
+                .populate('userId', 'name email')
+                .populate('products.productId');
         } catch (error) {
             throw new Error(error.message);
         }
     }
+
 
     async getOrdersByUserId(userId) {
         try {

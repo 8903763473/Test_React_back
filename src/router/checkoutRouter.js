@@ -8,6 +8,6 @@ router.get('/getCheckoutsByUserId/:userId', checkoutController.getCheckoutsByUse
 router.get('/getCheckoutById/:checkoutId', checkoutController.getCheckoutById);
 
 router.get('/getOverAllOrders', checkoutController.getOverallOrders);
-router.get('/getMyOrdersById/:id', checkoutController.getOrderById);
+router.post('/trackOrder', checkoutController.getOrderById);
 router.get('/getMyOrdersByuserId/:userId', checkoutController.getOrdersByUserId);
 module.exports = router;

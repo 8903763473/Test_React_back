@@ -1,11 +1,8 @@
-// controllers/cartController.js
 const CartService = require('../service/cartService');
-// const io = require('../socket');
 
 exports.getCart = async (req, res) => {
     try {
         const userId = req.body.userId;
-        console.log(userId);
         if (!userId) {
             return res.status(400).json({ message: 'User ID is required' });
         }

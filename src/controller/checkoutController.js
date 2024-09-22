@@ -68,17 +68,18 @@ class CheckoutController {
 
     // Get order by ID
     async getOrderById(req, res) {
-        const { id } = req.params;
+        const { userId, orderId } = req.body;     
         try {
-            const order = await checkoutService.getOrderById(id);
+            const order = await checkoutService.getOrderById(orderId, userId); 
             if (!order) {
-                return res.status(404).json({ message: 'Order not found' });
+                return res.status(404).json({ message: 'Order not found for this user' });
             }
             res.status(200).json(order);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-    };
+    }
+    
 
 
     async getOrdersByUserId(req, res) {
