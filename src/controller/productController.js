@@ -86,6 +86,22 @@ class ProductController {
         }
     }
 
+    async searchProducts(req, res) {
+        const { query } = req.query; 
+
+        if (!query) {
+            return res.status(400).json({ message: 'Query is required' });
+        }
+
+        try {
+            const products = await productService.searchProducts(query);
+            return res.status(200).json(products);
+        } catch (error) {
+            return res.status(500).json({ message: 'Error retrieving products', error: error.message });
+        }
+    }
+
+
 }
 
 

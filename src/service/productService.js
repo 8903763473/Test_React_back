@@ -97,6 +97,17 @@ class ProductService {
         }
     }
 
+    async searchProducts(searchTerm) {
+        const regex = new RegExp(searchTerm, 'i'); // Case-insensitive regex
+        const products = await Product.find({
+            $or: [
+                { productName: regex },
+                { productCategory: regex }
+            ]
+        });
+        return products;
+    }
+
 }
 
 module.exports = new ProductService();

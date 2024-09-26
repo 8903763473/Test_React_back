@@ -14,4 +14,6 @@ router.get('/getHighOfferProducts', productController.getHighOfferProducts);
 router.get('/trendingProducts', productController.getTrendingProducts);
 
 
+router.get('/search', productController.searchProducts);
+
 module.exports = router;
