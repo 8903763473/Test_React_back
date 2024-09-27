@@ -5,7 +5,7 @@ const router = express.Router();
 router.post('/checkoutProducts', checkoutController.createCheckout);
 router.get('/getAllCheckouts', checkoutController.getAllCheckouts);
 router.get('/getCheckoutsByUserId/:userId', checkoutController.getCheckoutsByUserId);
-router.get('/getCheckoutById/:checkoutId', checkoutController.getCheckoutById);
+router.get('/TrackOrder/:checkoutId', checkoutController.getCheckoutById);
 
 router.get('/getOverAllOrders', checkoutController.getOverallOrders);
 router.post('/trackOrder', checkoutController.getOrderById);

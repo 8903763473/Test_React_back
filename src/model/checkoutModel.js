@@ -17,6 +17,7 @@ const checkoutSchema = new mongoose.Schema({
     zipCode: { type: String, required: true },
     phone: { type: String, required: true },
     orderNotes: { type: String },
+    orderStatus: { type: String },
     products: [productSchema],
     createdAt: { type: Date, default: Date.now }
 });
