@@ -84,7 +84,7 @@ class CheckoutService {
         <h1 style="color: #333; text-align: center; margin-bottom: 20px;">Order Confirmation</h1>
         <p style="font-size: 16px; color: #555; text-align: center; margin-bottom: 20px;">Your order has been placed successfully. Thank you for shopping with us!</p>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-        <p style="font-size: 14px; color: #777; text-align: center;">"The best way to predict the future is to create it." – Vijay</p>
+        <p style="font-size: 14px; color: #777; text-align: center;">"The best way to predict the future is to create it." – Welcome Grocery</p>
         <div style="text-align: center; margin-top: 20px;">
             <p style="font-size: 14px; color: #333;">If you have any questions, feel free to contact us at <a href="mailto:chatwithus5581@gmail.com" style="color: #007bff;">chatwithus5581@gmail.com</a>.</p>
         </div>
