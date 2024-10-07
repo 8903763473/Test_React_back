@@ -12,6 +12,9 @@ exports.createUser = async (userData) => {
         const savedUser = await newUser.save();
         return savedUser;
     } catch (error) {
+        if (error.code === 11000 && error.keyPattern && error.keyPattern.email) {
+            throw new Error('Email is already registered');
+        }
         throw new Error(error.message);
     }
 };

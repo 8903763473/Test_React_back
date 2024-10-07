@@ -3,69 +3,30 @@ const Product = require('../model/productModel');
 
 class wishListService {
     async getWish(userId) {
-        return Wish.findOne({ userId }).populate('items.productId');
+        return Wish.findOne({ userId }).populate('items.productId', '-_id -__v');
     }
 
     async addToWish(userId, productId, quantity) {
-        try {
-            let wish = await Wish.findOne({ userId }).populate('items.productId');
+        let wish = await Wish.findOne({ userId });
 
-            if (wish) {
-                const itemIndex = wish.items.findIndex(item => item.productId._id.toString() === productId.toString());
+        if (wish) {
+            const itemIndex = wish.items.findIndex(item => item.productId.toString() === productId.toString());
 
-                if (itemIndex > -1) {
-                    wish.items[itemIndex].quantity += quantity;
-                } else {
-                    const product = await Product.findById(productId);
-                    if (!product) {
-                        throw new Error('Product not found');
-                    }
-                    wish.items.push({
-                        productId: product._id,
-                        quantity,
-                        productName: product.productName,
-                        productCategory: product.productCategory,
-                        productImage: product.productImage,
-                        productOriginalRate: product.productOriginalRate,
-                        productCurrentRate: product.productCurrentRate,
-                        productDescription: product.productDescription,
-                        productRating: product.productRating,
-                        productStatus: product.productStatus,
-                        productQuantity: product.productQuantity,
-                        productUnit: product.productUnit,
-                        productDiscount: product.productDiscount,
-                    });
-                }
-                return await wish.save();
+            if (itemIndex > -1) {
+                wish.items[itemIndex].quantity += quantity;  
             } else {
-                const product = await Product.findById(productId);
-                if (!product) {
-                    throw new Error('Product not found');
-                }
-                const newWish = new Wish({
-                    userId,
-                    items: [{
-                        productId: product._id,
-                        quantity,
-                        productName: product.productName,
-                        productCategory: product.productCategory,
-                        productImage: product.productImage,
-                        productOriginalRate: product.productOriginalRate,
-                        productCurrentRate: product.productCurrentRate,
-                        productDescription: product.productDescription,
-                        productRating: product.productRating,
-                        productStatus: product.productStatus,
-                        productQuantity: product.productQuantity,
-                        productUnit: product.productUnit,
-                        productDiscount: product.productDiscount,
-                    }]
-                });
-                return await newWish.save();
+                wish.items.push({ productId, quantity }); 
             }
-        } catch (error) {
-            throw new Error(`${error.message}`);
+            return await wish.save();
+        } else {
+            const newWish = new Wish({
+                userId,
+                items: [{ productId, quantity }]  
+            });
+            return await newWish.save();
         }
     }
+
 
     async removeFromWish(userId, productId) {
         return Wish.findOneAndUpdate(
