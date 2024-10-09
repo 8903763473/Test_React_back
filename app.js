@@ -14,9 +14,12 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/Test_DB')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-
+    .then(() => {
+        console.log("Connected to MongoDB");
+    })
+    .catch((err) => {
+        console.error("Connection error", err);
+    });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -84,30 +87,6 @@ io.on('connection', (socket) => {
             socket.emit('error', { message: error.message });
         }
     });
-
-
-    // socket.on('getCart', async (userId) => {
-    //     try {
-    //         const cart = await CartService.getCart(userId);
-    //         console.log('Emitting cart data:', cart);
-    //         socket.emit('cartData', cart);
-
-    //         const changeStream = CartService.watchCartChanges(userId);
-    //         changeStream.on('change', async () => {
-    //             const updatedCart = await CartService.getCart(userId);
-    //             socket.emit('cartData', updatedCart);
-    //         });
-
-    //         socket.on('disconnect', () => {
-    //             console.log('Client disconnected', socket.id);
-    //             if (changeStream) changeStream.close();
-    //         });
-    //     } catch (error) {
-    //         console.error('Error fetching cart:', error);
-    //         socket.emit('error', { message: error.message });
-    //     }
-    // });
-
 });
 
 app.listen(PORT, () => {
