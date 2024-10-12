@@ -1,4 +1,5 @@
 const CartService = require('../service/cartService');
+const { io } = require('../../app');
 
 exports.getCart = async (req, res) => {
     try {
@@ -8,7 +9,7 @@ exports.getCart = async (req, res) => {
         }
         const cart = await CartService.getCart(userId);
         if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
+            return res.status(204).json({ message: 'Cart not found' });
         }
         res.json(cart);
     } catch (error) {
@@ -19,10 +20,16 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
     try {
-        const userId = req.body.userId; // Assuming you have user info in req.user
+        const userId = req.body.userId;
         const { productId, quantity } = req.body;
         const updatedCart = await CartService.addToCart(userId, productId, quantity);
-        // io.to(userId).emit('cartData', updatedCart);
+
+        if (io) {
+            io.to(userId).emit('cartData', updatedCart); 
+        } else {
+            console.error("Socket IO instance is undefined");
+        }
+
         res.json(updatedCart);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -31,7 +38,7 @@ exports.addToCart = async (req, res) => {
 
 exports.removeFromCart = async (req, res) => {
     try {
-        const userId = req.query.userId; // Now getting userId from query
+        const userId = req.query.userId;
         const { productId } = req.params;
         const updatedCart = await CartService.removeFromCart(userId, productId);
         res.json(updatedCart);
@@ -42,7 +49,7 @@ exports.removeFromCart = async (req, res) => {
 
 exports.clearCart = async (req, res) => {
     try {
-        const userId = req.query.userId; // Fetch from query parameters
+        const userId = req.query.userId;
         console.log(userId);
         if (!userId) {
             return res.status(400).json({ message: 'User ID is required' });
@@ -59,12 +66,10 @@ exports.updateCart = async (req, res) => {
     try {
         const { userId, items } = req.body;
 
-        // Validate inputs
         if (!userId || !Array.isArray(items)) {
             return res.status(400).json({ message: 'User ID and items array are required' });
         }
 
-        // Call CartService to perform bulk update
         const updatedCart = await CartService.updateCart(userId, items);
 
         if (!updatedCart) {

@@ -9,7 +9,7 @@ exports.getWish = async (req, res) => {
         }
         const wish = await wishService.getWish(userId);
         if (!wish) {
-            return res.status(404).json({ message: 'WishList not found' });
+            return res.status(204).json({ message: 'WishList not found' });
         }
         res.json(wish);
     } catch (error) {

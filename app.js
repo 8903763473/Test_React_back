@@ -51,43 +51,23 @@ app.use('/api/grocery/feedback', feedbackRoute);
 // SOCKET------------------------------------------------------------
 const io = socketIo(8000, {
     cors: {
-        origin: "http://localhost:3000/",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling']
     }
 });
 
 io.on('connection', (socket) => {
-    console.log('New client connected now', socket.id);
+    console.log('New client connected:', socket.id);
     socket.emit('test', { message: 'Hello from server' });
 
     socket.on('joinRoom', (userId) => {
         socket.join(userId);
         console.log(`User ${socket.id} joined room ${userId}`);
     });
-
-    socket.on('getCart', async (userId) => {
-        try {
-            const cart = await CartService.getCart(userId);
-            console.log('Emitting cart data:', cart);
-            socket.emit('cartData', cart);
-
-            const changeStream = await CartService.watchCartChanges(userId);
-            changeStream.on('change', async () => {
-                const updatedCart = await CartService.getCart(userId);
-                socket.emit('cartData', updatedCart);
-            });
-
-            socket.on('disconnect', () => {
-                console.log('Client disconnected', socket.id);
-                changeStream.close(); // close changeStream properly
-            });
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-            socket.emit('error', { message: error.message });
-        }
-    });
 });
+
+module.exports = { io };
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
