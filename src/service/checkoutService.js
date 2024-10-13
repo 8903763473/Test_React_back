@@ -6,20 +6,18 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 
-// Create a transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Use environment variables
+        user: process.env.EMAIL_USER, 
         pass: process.env.EMAIL_PASS,
     },
     debug: true,
     tls: {
-        rejectUnauthorized: false // Allows self-signed certificates, consider using a valid SSL certificate in production
+        rejectUnauthorized: false 
     },
 });
 
-// Verify connection configuration
 transporter.verify(function (error, success) {
     if (error) {
         console.log(error);
@@ -41,7 +39,7 @@ class CheckoutService {
         } catch (error) {
             throw new Error(error.message);
         }
-    }
+    };
 
     async getAllCheckouts() {
         try {
@@ -50,16 +48,7 @@ class CheckoutService {
         } catch (error) {
             throw new Error(error.message);
         }
-    }
-
-    async getCheckoutsByUserId(userId) {
-        try {
-            const checkouts = await Checkout.find({ userId }).populate('products.productId');
-            return checkouts;
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    }
+    };
 
     async getCheckoutById(checkoutId) {
         try {
@@ -68,14 +57,14 @@ class CheckoutService {
         } catch (error) {
             throw new Error(error.message);
         }
-    }
+    };
 
     async orderPlacedService(email) {
         return new Promise(async (resolve, reject) => {
             let mailOptions = {
-                from: 'chatwithus5581@gmail.com', // Sender address
-                to: email, // List of recipients
-                subject: 'Order Placed Successfully !', // Subject line
+                from: 'chatwithus5581@gmail.com',
+                to: email,
+                subject: 'Order Placed Successfully !',
                 html: `
                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
         <div style="text-align: center;">
@@ -116,28 +105,13 @@ class CheckoutService {
         });
     };
 
-    // Get all orders
     async getOverallOrders() {
         try {
             return await Checkout.find().populate('userId', 'name email').populate('products.productId');
         } catch (error) {
             throw new Error(error.message);
         }
-    }
-
-    // Get order by ID
-    async getOrderById(orderId, userId) {
-        console.log(orderId, userId);
-
-        try {
-            return await Checkout.findOne({ _id: orderId, userId: userId })
-                .populate('userId', 'name email')
-                .populate('products.productId');
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    }
-
+    };
 
     async getOrdersByUserId(userId) {
         try {

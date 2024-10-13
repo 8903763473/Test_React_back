@@ -23,16 +23,6 @@ class CheckoutController {
         }
     }
 
-    async getCheckoutsByUserId(req, res) {
-        try {
-            console.log(req.params.userId);
-            const checkouts = await checkoutService.getCheckoutsByUserId(req.params.userId);
-            res.status(200).json(checkouts);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
-
     async getCheckoutById(req, res) {
         try {
             console.log(req.params.checkoutId);
@@ -41,22 +31,8 @@ class CheckoutController {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
-    }
-
-    async orderPlacedIntimation(req, res) {
-        try {
-            const { email } = req.body;
-            const emailResponse = await emailService.orderPlacedService(email);
-            res.status(200).json(emailResponse);
-        } catch (error) {
-            res.status(500).json({
-                message: 'Failed to send invitation email',
-                error: error.message
-            });
-        }
     };
 
-    // Get all orders
     async getOverallOrders(req, res) {
         try {
             const orders = await checkoutService.getOverallOrders();
@@ -65,22 +41,6 @@ class CheckoutController {
             res.status(500).json({ message: error.message });
         }
     };
-
-    // Get order by ID
-    async getOrderById(req, res) {
-        const { userId, orderId } = req.body;     
-        try {
-            const order = await checkoutService.getOrderById(orderId, userId); 
-            if (!order) {
-                return res.status(404).json({ message: 'Order not found for this user' });
-            }
-            res.status(200).json(order);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        }
-    }
-    
-
 
     async getOrdersByUserId(req, res) {
         const { userId } = req.params;
