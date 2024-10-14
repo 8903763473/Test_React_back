@@ -102,6 +102,22 @@ class ProductController {
     }
 
 
+    async autoComplete(req, res) {
+        const { query } = req.query;    
+        if (!query) {
+            return res.status(400).json({ message: 'Query is required' });
+        }    
+        try {
+            const products = await productService.autoComplete(query);
+            const productNames = products.map(product => ({ productName: product.productName }));
+            return res.status(200).json(productNames); 
+        } catch (error) {
+            return res.status(500).json({ message: 'Error retrieving products', error: error.message });
+        }
+    }
+    
+
+
 }
 
 

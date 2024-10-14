@@ -9,12 +9,12 @@ dotenv.config();
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, 
+        user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
     debug: true,
     tls: {
-        rejectUnauthorized: false 
+        rejectUnauthorized: false
     },
 });
 
@@ -26,11 +26,24 @@ transporter.verify(function (error, success) {
     }
 });
 
+const generateUniqueOrderId = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let orderId = '';
+    for (let i = 0; i < 6; i++) {
+        orderId += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return orderId;
+}
+
 class CheckoutService {
 
     async createCheckout(checkoutData) {
         try {
-            const checkout = new Checkout(checkoutData);
+            const orderId = generateUniqueOrderId();
+            const checkout = new Checkout({
+                ...checkoutData,
+                orderId
+            });
             await checkout.save();
 
             const userId = checkoutData.userId;
@@ -50,9 +63,9 @@ class CheckoutService {
         }
     };
 
-    async getCheckoutById(checkoutId) {
+    async getCheckoutById(orderId) {
         try {
-            const checkout = await Checkout.findById(checkoutId).populate('products.productId');
+            const checkout = await Checkout.findOne({ orderId }).populate('products.productId');
             return checkout;
         } catch (error) {
             throw new Error(error.message);

@@ -5,7 +5,10 @@ const cors = require('cors');
 const CartService = require('./src/service/cartService');
 const socketIo = require('socket.io');
 const http = require('http');
+const socket = require('./socket'); 
+
 const app = express();
+const server = http.createServer(app); 
 
 const PORT = 8001;
 
@@ -20,12 +23,6 @@ mongoose.connect('mongodb://localhost:27017/Test_DB')
     .catch((err) => {
         console.error("Connection error", err);
     });
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-    console.log('Connected to MongoDB');
-});
 
 // Router imports
 const caregoryRouter = require('./src/router/categoryRouter');
@@ -49,26 +46,31 @@ app.use('/api/grocery/payment', paymentRoute);
 app.use('/api/grocery/feedback', feedbackRoute);
 
 // SOCKET------------------------------------------------------------
-const io = socketIo(8000, {
-    cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"],
-        transports: ['websocket', 'polling']
-    }
-});
 
-io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
-    socket.emit('test', { message: 'Hello from server' });
+// const io = socketIo(server, {
+//     cors: {
+//         origin: "http://localhost:3000",
+//         methods: ["GET", "POST"],
+//         transports: ['websocket', 'polling']
+//     }
+// });
 
-    socket.on('joinRoom', (userId) => {
-        socket.join(userId);
-        console.log(`User ${socket.id} joined room ${userId}`);
-    });
-});
+// io.on('connection', (socket) => {
+//     console.log('New client connected:', socket.id);
+//     socket.emit('test', { message: 'Hello from server' });
 
-module.exports = { io };
+//     socket.on('joinRoom', (userId) => {
+//         socket.join(userId);
+//         console.log(`User ${socket.id} joined room ${userId}`);
+//     });
+// });
 
-app.listen(PORT, () => {
+// module.exports = { io }; 
+
+
+socket.init(server);
+
+// Start server
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

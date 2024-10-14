@@ -16,4 +16,9 @@ router.get('/trendingProducts', productController.getTrendingProducts);
 
 router.get('/search', productController.searchProducts);
 
+
+router.get('/autoComplete', productController.autoComplete);
+
+
+
 module.exports = router;

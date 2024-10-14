@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const productSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -8,6 +9,7 @@ const productSchema = new mongoose.Schema({
 
 const checkoutSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    orderId: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     country: { type: String, required: true },

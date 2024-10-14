@@ -1,5 +1,5 @@
 const CartService = require('../service/cartService');
-const { io } = require('../../app');
+const socket = require('../../socket');
 
 exports.getCart = async (req, res) => {
     try {
@@ -24,11 +24,8 @@ exports.addToCart = async (req, res) => {
         const { productId, quantity } = req.body;
         const updatedCart = await CartService.addToCart(userId, productId, quantity);
 
-        if (io) {
-            io.to(userId).emit('cartData', updatedCart); 
-        } else {
-            console.error("Socket IO instance is undefined");
-        }
+        const io = socket.getIo();
+        io.to(userId).emit('cartData', updatedCart);
 
         res.json(updatedCart);
     } catch (error) {
@@ -41,6 +38,8 @@ exports.removeFromCart = async (req, res) => {
         const userId = req.query.userId;
         const { productId } = req.params;
         const updatedCart = await CartService.removeFromCart(userId, productId);
+        const io = socket.getIo();
+        io.to(userId).emit('cartData', updatedCart);
         res.json(updatedCart);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -55,6 +54,8 @@ exports.clearCart = async (req, res) => {
             return res.status(400).json({ message: 'User ID is required' });
         }
         await CartService.clearCart(userId);
+        const io = socket.getIo();
+        io.to(userId).emit('cartData', []);
         res.json({ message: 'Cart cleared' });
     } catch (error) {
         res.status(500).json({ message: error.message });

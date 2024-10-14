@@ -108,6 +108,15 @@ class ProductService {
         return products;
     }
 
+    async autoComplete(searchTerm) {
+        const regex = new RegExp(searchTerm, 'i'); 
+        const products = await Product.find({
+            productName: regex, 
+        }).select('productName'); 
+        return products;
+    }
+
+
 }
 
 module.exports = new ProductService();
